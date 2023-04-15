@@ -7,9 +7,9 @@ class FavScreen extends StatefulWidget {
   const FavScreen({
     Key? key,
 
-    // required this.totalID
+
   }) : super(key: key);
-  // final List<QuoteModel> totalID;
+
 
   @override
   _FavScreenState createState() => _FavScreenState();
@@ -24,7 +24,7 @@ class _FavScreenState extends State<FavScreen> {
     favoriteCard = box.read('favoriteList');
     final ids = favoriteCard.map((e) => e.id).toSet();
 
-    print(ids);
+
     favoriteCard.retainWhere((x) => ids.remove(x.id));
 
     super.initState();
