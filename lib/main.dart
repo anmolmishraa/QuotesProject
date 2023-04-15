@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get_storage/get_storage.dart';
+
 import 'package:swipe_to/swipe_to.dart';
 
 import 'Api_Call/Api.dart';
@@ -8,6 +10,7 @@ import 'model/quote_model.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await GetStorage.init();
 
   runApp(const MyApp());
 }
@@ -39,6 +42,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final box = GetStorage();
   late Future<List<QuoteModel>> futureQuote;
   @override
   void initState() {
@@ -51,6 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String authorText = "";
   String id = "";
   List<QuoteModel> totalID = [];
+
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +127,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                                             .toString()
                                                         : authorText,
                                                     id: id == ""
-                                                        ? snapshot.data![0].id
+                                                        ? snapshot.data![1].id
                                                             .toString()
                                                         : id,
                                                     quotes: quoteText == ""
@@ -136,6 +141,10 @@ class _MyHomePageState extends State<MyHomePage> {
                                                         : tagText,
                                                   ),
                                                 );
+                                                box.write('favoriteList', totalID
+                                                );
+
+
                                                 setState(() {});
 
                                                 Fluttertoast.showToast(
@@ -193,9 +202,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                     authorText = snapshot
                                         .data![index].authorName
                                         .toString();
+
                                     id = id == ""
                                         ? snapshot.data![0].id.toString()
                                         : snapshot.data![index].id.toString();
+                                    print(id);
+                                    print("left");
                                   });
                                   ApiQuote().fetchQuote();
                                 },
@@ -212,6 +224,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                     id = id == ""
                                         ? snapshot.data![0].id.toString()
                                         : snapshot.data![index].id.toString();
+                                    print(id);
+                                    print("right");
                                   });
 
                                   ApiQuote().fetchQuote();
@@ -226,7 +240,10 @@ class _MyHomePageState extends State<MyHomePage> {
                         onTap: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => FavScreen(totalID: totalID),
+                              builder: (context) => FavScreen(
+                                 // totalID: totalID
+
+                              ),
                             ),
                           );
                         },

@@ -1,24 +1,32 @@
-import 'package:demo_project/model/favModel.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 
 import 'model/quote_model.dart';
 
 class FavScreen extends StatefulWidget {
-  const FavScreen({Key? key, required this.totalID}) : super(key: key);
-  final List<QuoteModel> totalID;
+  const FavScreen({
+    Key? key,
+
+    // required this.totalID
+  }) : super(key: key);
+  // final List<QuoteModel> totalID;
 
   @override
   _FavScreenState createState() => _FavScreenState();
 }
 
 class _FavScreenState extends State<FavScreen> {
-  late Future<Fav> fav;
-  List id = [];
-  late Future<List<QuoteModel>> futureQuote;
-  List<QuoteModel>? dataList;
+  List<QuoteModel> favoriteCard = [];
 
+  final box = GetStorage();
   @override
   void initState() {
+    favoriteCard = box.read('favoriteList');
+    final ids = favoriteCard.map((e) => e.id).toSet();
+
+    print(ids);
+    favoriteCard.retainWhere((x) => ids.remove(x.id));
+
     super.initState();
   }
 
@@ -29,15 +37,15 @@ class _FavScreenState extends State<FavScreen> {
         title: Text("Favorite Quotes"),
       ),
       body: SafeArea(
-        child: widget.totalID.length == 0
+        child: favoriteCard.length == 0
             ? Center(
                 child: Text("No favorite quotes found"),
               )
             : ListView.builder(
-                itemCount: widget.totalID.length,
+                itemCount: favoriteCard.length,
                 padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                 itemBuilder: (BuildContext context, index) {
-                  var data = widget.totalID[index];
+                  var data = favoriteCard[index];
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     child: Container(
